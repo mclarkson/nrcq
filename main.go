@@ -13,6 +13,7 @@ type args struct {
 	newline bool   // True - Output newlines
 	brief   bool   // True - Omit empty fields
 	filter  string // Regex filter
+	data    string // Data to send
 	encode  bool   // Encode output
 }
 
@@ -38,8 +39,10 @@ func init() {
 
 	flag.StringVarP(&Args.folder, "folder", "F", "local",
 		"The system folder to query.")
+	flag.StringVarP(&Args.data, "data", "d", "",
+		"Set extra data to send, 'option:value[,option:value]...'")
 	flag.StringVarP(&Args.filter, "filter", "f", "",
-		"An RE2 regex filter in the form 'property:regex[,property:regex]...'")
+		"A client side RE2 regex filter, 'option:regex[,option:regex]...'")
 	flag.BoolVarP(&Args.newline, "pack", "p", false,
 		"Remove spaces and lines from the Json output.")
 	flag.BoolVarP(&Args.brief, "complete", "c", false,
@@ -70,7 +73,7 @@ func main() {
 
 		case strings.HasSuffix(ep, "/hosts"):
 			jh := nrc.NewNrcHosts()
-			err := jh.GetHosts(url, ep+`?json={"folder":"`+Args.folder+`"}`)
+			err := jh.GetHosts(url, ep, Args.folder, Args.data)
 			if err != nil {
 				fmt.Printf("ERROR: %s\n", err.Error())
 				os.Exit(1)
@@ -79,7 +82,7 @@ func main() {
 
 		case strings.HasSuffix(ep, "/services"):
 			jh := nrc.NewNrcServices()
-			err := jh.GetServices(url, ep+`?json={"folder":"`+Args.folder+`"}`)
+			err := jh.GetServices(url, ep, Args.folder, Args.data)
 			if err != nil {
 				fmt.Printf("ERROR: %s\n", err.Error())
 				os.Exit(1)
@@ -88,7 +91,7 @@ func main() {
 
 		case strings.HasSuffix(ep, "/servicesets"):
 			jh := nrc.NewNrcServicesets()
-			err := jh.GetServicesets(url, ep+`?json={"folder":"`+Args.folder+`"}`)
+			err := jh.GetServicesets(url, ep, Args.folder, Args.data)
 			if err != nil {
 				fmt.Printf("ERROR: %s\n", err.Error())
 				os.Exit(1)
@@ -97,7 +100,7 @@ func main() {
 
 		case strings.HasSuffix(ep, "/hosttemplates"):
 			jh := nrc.NewNrcHosttemplates()
-			err := jh.GetHosttemplates(url, ep+`?json={"folder":"`+Args.folder+`"}`)
+			err := jh.GetHosttemplates(url, ep, Args.folder, Args.data)
 			if err != nil {
 				fmt.Printf("ERROR: %s\n", err.Error())
 				os.Exit(1)
@@ -106,7 +109,7 @@ func main() {
 
 		case strings.HasSuffix(ep, "/servicetemplates"):
 			jh := nrc.NewNrcServicetemplates()
-			err := jh.GetServicetemplates(url, ep+`?json={"folder":"`+Args.folder+`"}`)
+			err := jh.GetServicetemplates(url, ep, Args.folder, Args.data)
 			if err != nil {
 				fmt.Printf("ERROR: %s\n", err.Error())
 				os.Exit(1)
@@ -115,7 +118,7 @@ func main() {
 
 		case strings.HasSuffix(ep, "/hostgroups"):
 			jh := nrc.NewNrcHostgroups()
-			err := jh.GetHostgroups(url, ep+`?json={"folder":"`+Args.folder+`"}`)
+			err := jh.GetHostgroups(url, ep, Args.folder, Args.data)
 			if err != nil {
 				fmt.Printf("ERROR: %s\n", err.Error())
 				os.Exit(1)
@@ -124,7 +127,7 @@ func main() {
 
 		case strings.HasSuffix(ep, "/servicegroups"):
 			jh := nrc.NewNrcServicegroups()
-			err := jh.GetServicegroups(url, ep+`?json={"folder":"`+Args.folder+`"}`)
+			err := jh.GetServicegroups(url, ep, Args.folder, Args.data)
 			if err != nil {
 				fmt.Printf("ERROR: %s\n", err.Error())
 				os.Exit(1)
@@ -133,7 +136,7 @@ func main() {
 
 		case strings.HasSuffix(ep, "/contacts"):
 			jh := nrc.NewNrcContacts()
-			err := jh.GetContacts(url, ep+`?json={"folder":"`+Args.folder+`"}`)
+			err := jh.GetContacts(url, ep, Args.folder, Args.data)
 			if err != nil {
 				fmt.Printf("ERROR: %s\n", err.Error())
 				os.Exit(1)
@@ -142,7 +145,7 @@ func main() {
 
 		case strings.HasSuffix(ep, "/contactgroups"):
 			jh := nrc.NewNrcContactgroups()
-			err := jh.GetContactgroups(url, ep+`?json={"folder":"`+Args.folder+`"}`)
+			err := jh.GetContactgroups(url, ep, Args.folder, Args.data)
 			if err != nil {
 				fmt.Printf("ERROR: %s\n", err.Error())
 				os.Exit(1)
@@ -151,7 +154,7 @@ func main() {
 
 		case strings.HasSuffix(ep, "/timeperiods"):
 			jh := nrc.NewNrcTimeperiods()
-			err := jh.GetTimeperiods(url, ep+`?json={"folder":"`+Args.folder+`"}`)
+			err := jh.GetTimeperiods(url, ep, Args.folder, Args.data)
 			if err != nil {
 				fmt.Printf("ERROR: %s\n", err.Error())
 				os.Exit(1)
@@ -160,7 +163,7 @@ func main() {
 
 		case strings.HasSuffix(ep, "/commands"):
 			jh := nrc.NewNrcCommands()
-			err := jh.GetCommands(url, ep+`?json={"folder":"`+Args.folder+`"}`)
+			err := jh.GetCommands(url, ep, Args.folder, Args.data)
 			if err != nil {
 				fmt.Printf("ERROR: %s\n", err.Error())
 				os.Exit(1)
@@ -169,7 +172,7 @@ func main() {
 
 		case strings.HasSuffix(ep, "/servicedeps"):
 			jh := nrc.NewNrcServicedeps()
-			err := jh.GetServicedeps(url, ep+`?json={"folder":"`+Args.folder+`"}`)
+			err := jh.GetServicedeps(url, ep, Args.folder, Args.data)
 			if err != nil {
 				fmt.Printf("ERROR: %s\n", err.Error())
 				os.Exit(1)
@@ -178,7 +181,7 @@ func main() {
 
 		case strings.HasSuffix(ep, "/hostdeps"):
 			jh := nrc.NewNrcHostdeps()
-			err := jh.GetHostdeps(url, ep+`?json={"folder":"`+Args.folder+`"}`)
+			err := jh.GetHostdeps(url, ep, Args.folder, Args.data)
 			if err != nil {
 				fmt.Printf("ERROR: %s\n", err.Error())
 				os.Exit(1)
@@ -187,7 +190,7 @@ func main() {
 
 		case strings.HasSuffix(ep, "/serviceesc"):
 			jh := nrc.NewNrcServiceesc()
-			err := jh.GetServiceesc(url, ep+`?json={"folder":"`+Args.folder+`"}`)
+			err := jh.GetServiceesc(url, ep, Args.folder, Args.data)
 			if err != nil {
 				fmt.Printf("ERROR: %s\n", err.Error())
 				os.Exit(1)
@@ -196,7 +199,7 @@ func main() {
 
 		case strings.HasSuffix(ep, "/hostesc"):
 			jh := nrc.NewNrcHostesc()
-			err := jh.GetHostesc(url, ep+`?json={"folder":"`+Args.folder+`"}`)
+			err := jh.GetHostesc(url, ep, Args.folder, Args.data)
 			if err != nil {
 				fmt.Printf("ERROR: %s\n", err.Error())
 				os.Exit(1)
@@ -205,7 +208,7 @@ func main() {
 
 		case strings.HasSuffix(ep, "/serviceextinfo"):
 			jh := nrc.NewNrcServiceextinfo()
-			err := jh.GetServiceextinfo(url, ep+`?json={"folder":"`+Args.folder+`"}`)
+			err := jh.GetServiceextinfo(url, ep, Args.folder, Args.data)
 			if err != nil {
 				fmt.Printf("ERROR: %s\n", err.Error())
 				os.Exit(1)
@@ -214,7 +217,7 @@ func main() {
 
 		case strings.HasSuffix(ep, "/hostextinfo"):
 			jh := nrc.NewNrcHostextinfo()
-			err := jh.GetHostextinfo(url, ep+`?json={"folder":"`+Args.folder+`"}`)
+			err := jh.GetHostextinfo(url, ep, Args.folder, Args.data)
 			if err != nil {
 				fmt.Printf("ERROR: %s\n", err.Error())
 				os.Exit(1)
