@@ -1,4 +1,4 @@
-```
+
 nrcq(8)             System Administration Utilities            nrcq(8)
 
 NAME
@@ -9,8 +9,9 @@ SYNOPSIS
 
 DESCRIPTION
   -c, --complete=false: Show fields with empty values in Json output.
+  -d, --data="": Set extra data to send, 'option:value[,option:value]...'
   -e, --encode=false: Encode output so it can be piped to another tool.
-  -f, --filter="": An RE2 regex filter in the form 'property:regex[,property:regex]...'
+  -f, --filter="": A client side RE2 regex filter, 'option:regex[,option:regex]...'
   -F, --folder="local": The system folder to query.
   -p, --pack=false: Remove spaces and lines from the Json output.
 
@@ -20,4 +21,4 @@ EXAMPLES
 
   Show a subset of services:
     nrcq http://server/rest show/services -f "name:\bhost2\b|web,svcdesc:(?i)swap"
-```
+
