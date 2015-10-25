@@ -1,4 +1,4 @@
-
+```
 nrcq(8)             System Administration Utilities            nrcq(8)
 
 NAME
@@ -21,4 +21,6 @@ EXAMPLES
 
   Show a subset of services:
     nrcq http://server/rest show/services -f "name:\bhost2\b|web,svcdesc:(?i)swap"
+```
 
+Uses nagrestconf-golib
