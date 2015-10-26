@@ -20,7 +20,7 @@ DESCRIPTION
   -p, --pack=false: Remove spaces and lines from the Json output.
 
 EXAMPLES
-  List all nagios options in the servicesets table:
+  List all nagios options for the servicesets table:
     nrcq -l servicesets
 
   Show all hosts:

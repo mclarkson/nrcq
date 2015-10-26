@@ -47,7 +47,7 @@ func init() {
 		fmt.Fprintf(os.Stderr, "\nDESCRIPTION\n")
 		flag.PrintDefaults()
 		fmt.Fprintf(os.Stderr, "\nEXAMPLES\n")
-		fmt.Fprintf(os.Stderr, "  List all nagios options in the servicesets table:\n")
+		fmt.Fprintf(os.Stderr, "  List all nagios options for the servicesets table:\n")
 		fmt.Fprintf(os.Stderr, "    nrcq -l servicesets\n")
 		fmt.Fprintf(os.Stderr, "\n  Show all hosts:\n")
 		fmt.Fprintf(os.Stderr, "    nrcq http://server/rest show/hosts\n")
