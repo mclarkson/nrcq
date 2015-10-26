@@ -60,7 +60,7 @@ func init() {
 		fmt.Fprintf(os.Stderr, "      -d ipaddress:server1.there.gq \\\n")
 		fmt.Fprintf(os.Stderr, "      -d template:hsttmpl-local \\\n")
 		fmt.Fprintf(os.Stderr, "      -d servicesets:example-lin\n")
-		fmt.Fprintf(os.Stderr, "\n  Delete a host and all its services:\n")
+		fmt.Fprintf(os.Stderr, "\n  Delete a host and all of its services:\n")
 		fmt.Fprintf(os.Stderr, "    nrcq http://server/rest delete/services \\\n")
 		fmt.Fprintf(os.Stderr, "      -d name:server1 \\\n")
 		fmt.Fprintf(os.Stderr, "      -d \"svcdesc:.*\"\n")
@@ -80,7 +80,7 @@ func init() {
 	flag.BoolVarP(&Args.encode, "encode", "e", false,
 		"Encode output so it can be piped to another tool.")
 	flag.StringVarP(&Args.list, "list", "l", "",
-		"List all options for the specified table.")
+		"List all options for the specified table. Required fields are\n\t preceded by a star, '*'.")
 	flag.BoolVarP(&Args.json, "json", "j", false,
 		"Output the table list (-l) in JSON.")
 	//flag.StringVarP(&Args.data, "data", "d", "",
@@ -89,16 +89,25 @@ func init() {
 		"Set extra data to send, 'option:value[,option:value]...'\n\tMay be used multiple times.")
 }
 
-func DisplayArray(a []string) {
+func DisplayArray(a, r []string) {
 	l := 0
 	fmt.Println()
 	for _, j := range a {
-		l += len(j) + 2
+		s := ""
+		sl := 0
+		for _, k := range r {
+			if j == k {
+				sl = 1
+				s = "*"
+				break
+			}
+		}
+		l += len(j) + 2 + sl
 		if l > 79 {
-			l = 0
+			l = len(j) + 2
 			fmt.Printf("\n")
 		}
-		fmt.Printf("  %s", j)
+		fmt.Printf("  %s%s", s, j)
 	}
 	fmt.Printf("\n\n")
 }
@@ -122,103 +131,103 @@ func main() {
 			if Args.json == true {
 				fmt.Printf("%s\n", []byte(nrc.HostsFieldsJson()))
 			} else {
-				DisplayArray(nrc.HostsFields())
+				DisplayArray(nrc.HostsFields(), nrc.HostsRequiredFields())
 			}
 		case "services":
 			if Args.json == true {
 				fmt.Printf("%s\n", []byte(nrc.ServicesFieldsJson()))
 			} else {
-				DisplayArray(nrc.ServicesFields())
+				DisplayArray(nrc.ServicesFields(), nrc.ServicesRequiredFields())
 			}
 		case "servicesets":
 			if Args.json == true {
 				fmt.Printf("%s\n", []byte(nrc.ServicesetsFieldsJson()))
 			} else {
-				DisplayArray(nrc.ServicesetsFields())
+				DisplayArray(nrc.ServicesetsFields(), nrc.ServicesetsRequiredFields())
 			}
 		case "hosttemplates":
 			if Args.json == true {
 				fmt.Printf("%s\n", []byte(nrc.HosttemplatesFieldsJson()))
 			} else {
-				DisplayArray(nrc.HosttemplatesFields())
+				DisplayArray(nrc.HosttemplatesFields(), nrc.HosttemplatesRequiredFields())
 			}
 		case "servicetemplates":
 			if Args.json == true {
 				fmt.Printf("%s\n", []byte(nrc.ServicetemplatesFieldsJson()))
 			} else {
-				DisplayArray(nrc.ServicetemplatesFields())
+				DisplayArray(nrc.ServicetemplatesFields(), nrc.ServicetemplatesRequiredFields())
 			}
 		case "hostgroups":
 			if Args.json == true {
 				fmt.Printf("%s\n", []byte(nrc.HostgroupsFieldsJson()))
 			} else {
-				DisplayArray(nrc.HostgroupsFields())
+				DisplayArray(nrc.HostgroupsFields(), nrc.HostgroupsRequiredFields())
 			}
 		case "servicegroups":
 			if Args.json == true {
 				fmt.Printf("%s\n", []byte(nrc.ServicegroupsFieldsJson()))
 			} else {
-				DisplayArray(nrc.ServicegroupsFields())
+				DisplayArray(nrc.ServicegroupsFields(), nrc.ServicegroupsRequiredFields())
 			}
 		case "contacts":
 			if Args.json == true {
 				fmt.Printf("%s\n", []byte(nrc.ContactsFieldsJson()))
 			} else {
-				DisplayArray(nrc.ContactsFields())
+				DisplayArray(nrc.ContactsFields(), nrc.ContactsRequiredFields())
 			}
 		case "contactgroups":
 			if Args.json == true {
 				fmt.Printf("%s\n", []byte(nrc.ContactgroupsFieldsJson()))
 			} else {
-				DisplayArray(nrc.ContactgroupsFields())
+				DisplayArray(nrc.ContactgroupsFields(), nrc.ContactgroupsRequiredFields())
 			}
 		case "timeperiods":
 			if Args.json == true {
 				fmt.Printf("%s\n", []byte(nrc.TimeperiodsFieldsJson()))
 			} else {
-				DisplayArray(nrc.TimeperiodsFields())
+				DisplayArray(nrc.TimeperiodsFields(), nrc.TimeperiodsRequiredFields())
 			}
 		case "commands":
 			if Args.json == true {
 				fmt.Printf("%s\n", []byte(nrc.CommandsFieldsJson()))
 			} else {
-				DisplayArray(nrc.CommandsFields())
+				DisplayArray(nrc.CommandsFields(), nrc.CommandsRequiredFields())
 			}
 		case "servicedeps":
 			if Args.json == true {
 				fmt.Printf("%s\n", []byte(nrc.ServicedepsFieldsJson()))
 			} else {
-				DisplayArray(nrc.ServicedepsFields())
+				DisplayArray(nrc.ServicedepsFields(), nrc.ServicedepsRequiredFields())
 			}
 		case "hostdeps":
 			if Args.json == true {
 				fmt.Printf("%s\n", []byte(nrc.HostdepsFieldsJson()))
 			} else {
-				DisplayArray(nrc.HostdepsFields())
+				DisplayArray(nrc.HostdepsFields(), nrc.HostdepsRequiredFields())
 			}
 		case "serviceesc":
 			if Args.json == true {
 				fmt.Printf("%s\n", []byte(nrc.ServiceescFieldsJson()))
 			} else {
-				DisplayArray(nrc.ServiceescFields())
+				DisplayArray(nrc.ServiceescFields(), nrc.ServiceescRequiredFields())
 			}
 		case "hostesc":
 			if Args.json == true {
 				fmt.Printf("%s\n", []byte(nrc.HostescFieldsJson()))
 			} else {
-				DisplayArray(nrc.HostescFields())
+				DisplayArray(nrc.HostescFields(), nrc.HostescRequiredFields())
 			}
 		case "serviceextinfo":
 			if Args.json == true {
 				fmt.Printf("%s\n", []byte(nrc.ServiceextinfoFieldsJson()))
 			} else {
-				DisplayArray(nrc.ServiceextinfoFields())
+				DisplayArray(nrc.ServiceextinfoFields(), nrc.ServiceextinfoRequiredFields())
 			}
 		case "hostextinfo":
 			if Args.json == true {
 				fmt.Printf("%s\n", []byte(nrc.HostextinfoFieldsJson()))
 			} else {
-				DisplayArray(nrc.HostextinfoFields())
+				DisplayArray(nrc.HostextinfoFields(), nrc.HostextinfoRequiredFields())
 			}
 		default:
 			fmt.Printf("ERROR: Unknown table\n")

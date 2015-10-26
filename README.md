@@ -15,7 +15,8 @@ DESCRIPTION
   -f, --filter="": A client side RE2 regex filter, 'option:regex[,option:regex]...'
   -F, --folder="local": The system folder to query.
   -j, --json=false: Output the table list (-l) in JSON.
-  -l, --list="": List all options for the specified table.
+  -l, --list="": List all options for the specified table. Required fields are
+         preceded by a star, '*'.
   -p, --pack=false: Remove spaces and lines from the Json output.
 
 EXAMPLES
@@ -35,12 +36,12 @@ EXAMPLES
       -d template:hsttmpl-local \
       -d servicesets:example-lin
 
-  Delete a host and all its services:
+  Delete a host and all of its services:
     nrcq http://server/rest delete/services \
       -d name:server1 \
       -d "svcdesc:.*"
     nrcq http://server/rest delete/hosts \
       -d name:server1 \
+
 ```
 
-Uses nagrestconf-golib
