@@ -19,12 +19,28 @@ DESCRIPTION
   -p, --pack=false: Remove spaces and lines from the Json output.
 
 EXAMPLES
+  List all nagios options in the servicesets table:
+    nrcq -l servicesets
+
   Show all hosts:
     nrcq http://server/rest show/hosts
 
-  Show a subset of services:
+  Show a subset of services using an RE2 regular expression:
     nrcq http://server/rest show/services -f "name:\bhost2\b|web,svcdesc:(?i)swap"
 
+  Add a new host:
+    nrcq http://server/rest add/hosts \
+      -d name:server1,alias:server1 \
+      -d ipaddress:server1.there.gq \
+      -d template:hsttmpl-local \
+      -d servicesets:example-lin
+
+  Delete a host and all its services:
+    nrcq http://server/rest delete/services \
+      -d name:server1 \
+      -d "svcdesc:.*"
+    nrcq http://server/rest delete/hosts \
+      -d name:server1 \
 ```
 
 Uses nagrestconf-golib

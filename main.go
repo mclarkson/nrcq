@@ -47,11 +47,25 @@ func init() {
 		fmt.Fprintf(os.Stderr, "\nDESCRIPTION\n")
 		flag.PrintDefaults()
 		fmt.Fprintf(os.Stderr, "\nEXAMPLES\n")
-		fmt.Fprintf(os.Stderr, "  Show all hosts:\n")
+		fmt.Fprintf(os.Stderr, "  List all nagios options in the servicesets table:\n")
+		fmt.Fprintf(os.Stderr, "    nrcq -l servicesets\n")
+		fmt.Fprintf(os.Stderr, "\n  Show all hosts:\n")
 		fmt.Fprintf(os.Stderr, "    nrcq http://server/rest show/hosts\n")
-		fmt.Fprintf(os.Stderr, "\n  Show a subset of services:\n")
+		fmt.Fprintf(os.Stderr, "\n  Show a subset of services using an RE2 regular expression:\n")
 		fmt.Fprintf(os.Stderr, "    nrcq http://server/rest show/services")
 		fmt.Fprintf(os.Stderr, " -f \"name:\\bhost2\\b|web,svcdesc:(?i)swap\"\n")
+		fmt.Fprintf(os.Stderr, "\n  Add a new host:\n")
+		fmt.Fprintf(os.Stderr, "    nrcq http://server/rest add/hosts \\\n")
+		fmt.Fprintf(os.Stderr, "      -d name:server1,alias:server1 \\\n")
+		fmt.Fprintf(os.Stderr, "      -d ipaddress:server1.there.gq \\\n")
+		fmt.Fprintf(os.Stderr, "      -d template:hsttmpl-local \\\n")
+		fmt.Fprintf(os.Stderr, "      -d servicesets:example-lin\n")
+		fmt.Fprintf(os.Stderr, "\n  Delete a host and all its services:\n")
+		fmt.Fprintf(os.Stderr, "    nrcq http://server/rest delete/services \\\n")
+		fmt.Fprintf(os.Stderr, "      -d name:server1 \\\n")
+		fmt.Fprintf(os.Stderr, "      -d \"svcdesc:.*\"\n")
+		fmt.Fprintf(os.Stderr, "    nrcq http://server/rest delete/hosts \\\n")
+		fmt.Fprintf(os.Stderr, "      -d name:server1 \\\n")
 		fmt.Fprintf(os.Stderr, "\n")
 	}
 
@@ -93,19 +107,14 @@ func main() {
 
 	flag.Parse()
 
-	fmt.Printf("%s\n", dataFlag)
 	Args.data = string(dataFlag)
 
 	// Args left after flag finishes
 	url := flag.Arg(0) // Base URL, eg. "http://1.2.3.4/rest"
 	ep := flag.Arg(1)  // end point, eg. "show/hosts"
 
+	// Xfer the encode setting to the library
 	nrc.SetEncode(Args.encode)
-
-	if url == "" || ep == "" {
-		fmt.Fprintf(os.Stderr, "ERROR: 2 non-option arguments expected.\n")
-		flag.Usage()
-	}
 
 	if Args.list != "" {
 		switch Args.list {
@@ -215,6 +224,11 @@ func main() {
 			fmt.Printf("ERROR: Unknown table\n")
 		}
 		os.Exit(0)
+	}
+
+	if url == "" || ep == "" {
+		fmt.Fprintf(os.Stderr, "ERROR: 2 non-option arguments expected.\n")
+		flag.Usage()
 	}
 
 	if strings.HasPrefix(ep, "show/") {
