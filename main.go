@@ -82,7 +82,7 @@ func init() {
 	flag.StringVarP(&Args.list, "list", "l", "",
 		"List all options for the specified table. Required fields are\n\t preceded by a star, '*'.")
 	flag.BoolVarP(&Args.json, "json", "j", false,
-		"Output the table list (-l) in JSON.")
+		"Output in JSON format.")
 	//flag.StringVarP(&Args.data, "data", "d", "",
 	//	"Set extra data to send, 'option:value[,option:value]...'")
 	flag.VarP(&dataFlag, "data", "d",
@@ -112,6 +112,51 @@ func DisplayArray(a, r []string) {
 	fmt.Printf("\n\n")
 }
 
+func createObject(object string) (n nrc.NrcQuery) {
+	switch object {
+	case "check":
+		n = nrc.NewNrcCheck()
+	case "hosts":
+		n = nrc.NewNrcHosts()
+	case "services":
+		n = nrc.NewNrcServices()
+	case "servicesets":
+		n = nrc.NewNrcServicesets()
+	case "hosttemplates":
+		n = nrc.NewNrcHosttemplates()
+	case "servicetemplates":
+		n = nrc.NewNrcServicetemplates()
+	case "hostgroups":
+		n = nrc.NewNrcHostgroups()
+	case "servicegroups":
+		n = nrc.NewNrcServicegroups()
+	case "contacts":
+		n = nrc.NewNrcContacts()
+	case "contactgroups":
+		n = nrc.NewNrcContactgroups()
+	case "timeperiods":
+		n = nrc.NewNrcTimeperiods()
+	case "commands":
+		n = nrc.NewNrcCommands()
+	case "servicedeps":
+		n = nrc.NewNrcServicedeps()
+	case "hostdeps":
+		n = nrc.NewNrcHostdeps()
+	case "serviceesc":
+		n = nrc.NewNrcServiceesc()
+	case "hostesc":
+		n = nrc.NewNrcHostesc()
+	case "serviceextinfo":
+		n = nrc.NewNrcServiceextinfo()
+	case "hostextinfo":
+		n = nrc.NewNrcHostextinfo()
+	default:
+		fmt.Printf("ERROR: Unknown endpoint\n")
+		os.Exit(1)
+	}
+	return n
+}
+
 func main() {
 
 	flag.Parse()
@@ -126,112 +171,15 @@ func main() {
 	nrc.SetEncode(Args.encode)
 
 	if Args.list != "" {
-		switch Args.list {
-		case "hosts":
-			if Args.json == true {
-				fmt.Printf("%s\n", []byte(nrc.HostsFieldsJson()))
-			} else {
-				DisplayArray(nrc.HostsFields(), nrc.HostsRequiredFields())
-			}
-		case "services":
-			if Args.json == true {
-				fmt.Printf("%s\n", []byte(nrc.ServicesFieldsJson()))
-			} else {
-				DisplayArray(nrc.ServicesFields(), nrc.ServicesRequiredFields())
-			}
-		case "servicesets":
-			if Args.json == true {
-				fmt.Printf("%s\n", []byte(nrc.ServicesetsFieldsJson()))
-			} else {
-				DisplayArray(nrc.ServicesetsFields(), nrc.ServicesetsRequiredFields())
-			}
-		case "hosttemplates":
-			if Args.json == true {
-				fmt.Printf("%s\n", []byte(nrc.HosttemplatesFieldsJson()))
-			} else {
-				DisplayArray(nrc.HosttemplatesFields(), nrc.HosttemplatesRequiredFields())
-			}
-		case "servicetemplates":
-			if Args.json == true {
-				fmt.Printf("%s\n", []byte(nrc.ServicetemplatesFieldsJson()))
-			} else {
-				DisplayArray(nrc.ServicetemplatesFields(), nrc.ServicetemplatesRequiredFields())
-			}
-		case "hostgroups":
-			if Args.json == true {
-				fmt.Printf("%s\n", []byte(nrc.HostgroupsFieldsJson()))
-			} else {
-				DisplayArray(nrc.HostgroupsFields(), nrc.HostgroupsRequiredFields())
-			}
-		case "servicegroups":
-			if Args.json == true {
-				fmt.Printf("%s\n", []byte(nrc.ServicegroupsFieldsJson()))
-			} else {
-				DisplayArray(nrc.ServicegroupsFields(), nrc.ServicegroupsRequiredFields())
-			}
-		case "contacts":
-			if Args.json == true {
-				fmt.Printf("%s\n", []byte(nrc.ContactsFieldsJson()))
-			} else {
-				DisplayArray(nrc.ContactsFields(), nrc.ContactsRequiredFields())
-			}
-		case "contactgroups":
-			if Args.json == true {
-				fmt.Printf("%s\n", []byte(nrc.ContactgroupsFieldsJson()))
-			} else {
-				DisplayArray(nrc.ContactgroupsFields(), nrc.ContactgroupsRequiredFields())
-			}
-		case "timeperiods":
-			if Args.json == true {
-				fmt.Printf("%s\n", []byte(nrc.TimeperiodsFieldsJson()))
-			} else {
-				DisplayArray(nrc.TimeperiodsFields(), nrc.TimeperiodsRequiredFields())
-			}
-		case "commands":
-			if Args.json == true {
-				fmt.Printf("%s\n", []byte(nrc.CommandsFieldsJson()))
-			} else {
-				DisplayArray(nrc.CommandsFields(), nrc.CommandsRequiredFields())
-			}
-		case "servicedeps":
-			if Args.json == true {
-				fmt.Printf("%s\n", []byte(nrc.ServicedepsFieldsJson()))
-			} else {
-				DisplayArray(nrc.ServicedepsFields(), nrc.ServicedepsRequiredFields())
-			}
-		case "hostdeps":
-			if Args.json == true {
-				fmt.Printf("%s\n", []byte(nrc.HostdepsFieldsJson()))
-			} else {
-				DisplayArray(nrc.HostdepsFields(), nrc.HostdepsRequiredFields())
-			}
-		case "serviceesc":
-			if Args.json == true {
-				fmt.Printf("%s\n", []byte(nrc.ServiceescFieldsJson()))
-			} else {
-				DisplayArray(nrc.ServiceescFields(), nrc.ServiceescRequiredFields())
-			}
-		case "hostesc":
-			if Args.json == true {
-				fmt.Printf("%s\n", []byte(nrc.HostescFieldsJson()))
-			} else {
-				DisplayArray(nrc.HostescFields(), nrc.HostescRequiredFields())
-			}
-		case "serviceextinfo":
-			if Args.json == true {
-				fmt.Printf("%s\n", []byte(nrc.ServiceextinfoFieldsJson()))
-			} else {
-				DisplayArray(nrc.ServiceextinfoFields(), nrc.ServiceextinfoRequiredFields())
-			}
-		case "hostextinfo":
-			if Args.json == true {
-				fmt.Printf("%s\n", []byte(nrc.HostextinfoFieldsJson()))
-			} else {
-				DisplayArray(nrc.HostextinfoFields(), nrc.HostextinfoRequiredFields())
-			}
-		default:
-			fmt.Printf("ERROR: Unknown table\n")
+
+		n := createObject(Args.list)
+
+		if Args.json == true {
+			fmt.Printf("%s\n", []byte(n.FieldsJson()))
+		} else {
+			DisplayArray(n.Fields(), n.RequiredFields())
 		}
+
 		os.Exit(0)
 	}
 
@@ -240,334 +188,58 @@ func main() {
 		flag.Usage()
 	}
 
-	if strings.HasPrefix(ep, "show/") {
+	if strings.HasPrefix(ep, "check/") {
 
 		// GET REQUESTS
 
-		switch {
+		n := createObject("check")
 
-		case strings.HasSuffix(ep, "/hosts"):
-			jh := nrc.NewNrcHosts()
-			err := jh.GetHosts(url, ep, Args.folder, Args.data)
-			if err != nil {
-				fmt.Printf("ERROR: %s\n", err.Error())
-				os.Exit(1)
-			}
-			jh.ShowHostsJson(Args.newline, Args.brief, Args.filter)
-
-		case strings.HasSuffix(ep, "/services"):
-			jh := nrc.NewNrcServices()
-			err := jh.GetServices(url, ep, Args.folder, Args.data)
-			if err != nil {
-				fmt.Printf("ERROR: %s\n", err.Error())
-				os.Exit(1)
-			}
-			jh.ShowServicesJson(Args.newline, Args.brief, Args.filter)
-
-		case strings.HasSuffix(ep, "/servicesets"):
-			jh := nrc.NewNrcServicesets()
-			err := jh.GetServicesets(url, ep, Args.folder, Args.data)
-			if err != nil {
-				fmt.Printf("ERROR: %s\n", err.Error())
-				os.Exit(1)
-			}
-			jh.ShowServicesetsJson(Args.newline, Args.brief, Args.filter)
-
-		case strings.HasSuffix(ep, "/hosttemplates"):
-			jh := nrc.NewNrcHosttemplates()
-			err := jh.GetHosttemplates(url, ep, Args.folder, Args.data)
-			if err != nil {
-				fmt.Printf("ERROR: %s\n", err.Error())
-				os.Exit(1)
-			}
-			jh.ShowHosttemplatesJson(Args.newline, Args.brief, Args.filter)
-
-		case strings.HasSuffix(ep, "/servicetemplates"):
-			jh := nrc.NewNrcServicetemplates()
-			err := jh.GetServicetemplates(url, ep, Args.folder, Args.data)
-			if err != nil {
-				fmt.Printf("ERROR: %s\n", err.Error())
-				os.Exit(1)
-			}
-			jh.ShowServicetemplatesJson(Args.newline, Args.brief, Args.filter)
-
-		case strings.HasSuffix(ep, "/hostgroups"):
-			jh := nrc.NewNrcHostgroups()
-			err := jh.GetHostgroups(url, ep, Args.folder, Args.data)
-			if err != nil {
-				fmt.Printf("ERROR: %s\n", err.Error())
-				os.Exit(1)
-			}
-			jh.ShowHostgroupsJson(Args.newline, Args.brief, Args.filter)
-
-		case strings.HasSuffix(ep, "/servicegroups"):
-			jh := nrc.NewNrcServicegroups()
-			err := jh.GetServicegroups(url, ep, Args.folder, Args.data)
-			if err != nil {
-				fmt.Printf("ERROR: %s\n", err.Error())
-				os.Exit(1)
-			}
-			jh.ShowServicegroupsJson(Args.newline, Args.brief, Args.filter)
-
-		case strings.HasSuffix(ep, "/contacts"):
-			jh := nrc.NewNrcContacts()
-			err := jh.GetContacts(url, ep, Args.folder, Args.data)
-			if err != nil {
-				fmt.Printf("ERROR: %s\n", err.Error())
-				os.Exit(1)
-			}
-			jh.ShowContactsJson(Args.newline, Args.brief, Args.filter)
-
-		case strings.HasSuffix(ep, "/contactgroups"):
-			jh := nrc.NewNrcContactgroups()
-			err := jh.GetContactgroups(url, ep, Args.folder, Args.data)
-			if err != nil {
-				fmt.Printf("ERROR: %s\n", err.Error())
-				os.Exit(1)
-			}
-			jh.ShowContactgroupsJson(Args.newline, Args.brief, Args.filter)
-
-		case strings.HasSuffix(ep, "/timeperiods"):
-			jh := nrc.NewNrcTimeperiods()
-			err := jh.GetTimeperiods(url, ep, Args.folder, Args.data)
-			if err != nil {
-				fmt.Printf("ERROR: %s\n", err.Error())
-				os.Exit(1)
-			}
-			jh.ShowTimeperiodsJson(Args.newline, Args.brief, Args.filter)
-
-		case strings.HasSuffix(ep, "/commands"):
-			jh := nrc.NewNrcCommands()
-			err := jh.GetCommands(url, ep, Args.folder, Args.data)
-			if err != nil {
-				fmt.Printf("ERROR: %s\n", err.Error())
-				os.Exit(1)
-			}
-			jh.ShowCommandsJson(Args.newline, Args.brief, Args.filter)
-
-		case strings.HasSuffix(ep, "/servicedeps"):
-			jh := nrc.NewNrcServicedeps()
-			err := jh.GetServicedeps(url, ep, Args.folder, Args.data)
-			if err != nil {
-				fmt.Printf("ERROR: %s\n", err.Error())
-				os.Exit(1)
-			}
-			jh.ShowServicedepsJson(Args.newline, Args.brief, Args.filter)
-
-		case strings.HasSuffix(ep, "/hostdeps"):
-			jh := nrc.NewNrcHostdeps()
-			err := jh.GetHostdeps(url, ep, Args.folder, Args.data)
-			if err != nil {
-				fmt.Printf("ERROR: %s\n", err.Error())
-				os.Exit(1)
-			}
-			jh.ShowHostdepsJson(Args.newline, Args.brief, Args.filter)
-
-		case strings.HasSuffix(ep, "/serviceesc"):
-			jh := nrc.NewNrcServiceesc()
-			err := jh.GetServiceesc(url, ep, Args.folder, Args.data)
-			if err != nil {
-				fmt.Printf("ERROR: %s\n", err.Error())
-				os.Exit(1)
-			}
-			jh.ShowServiceescJson(Args.newline, Args.brief, Args.filter)
-
-		case strings.HasSuffix(ep, "/hostesc"):
-			jh := nrc.NewNrcHostesc()
-			err := jh.GetHostesc(url, ep, Args.folder, Args.data)
-			if err != nil {
-				fmt.Printf("ERROR: %s\n", err.Error())
-				os.Exit(1)
-			}
-			jh.ShowHostescJson(Args.newline, Args.brief, Args.filter)
-
-		case strings.HasSuffix(ep, "/serviceextinfo"):
-			jh := nrc.NewNrcServiceextinfo()
-			err := jh.GetServiceextinfo(url, ep, Args.folder, Args.data)
-			if err != nil {
-				fmt.Printf("ERROR: %s\n", err.Error())
-				os.Exit(1)
-			}
-			jh.ShowServiceextinfoJson(Args.newline, Args.brief, Args.filter)
-
-		case strings.HasSuffix(ep, "/hostextinfo"):
-			jh := nrc.NewNrcHostextinfo()
-			err := jh.GetHostextinfo(url, ep, Args.folder, Args.data)
-			if err != nil {
-				fmt.Printf("ERROR: %s\n", err.Error())
-				os.Exit(1)
-			}
-			jh.ShowHostextinfoJson(Args.newline, Args.brief, Args.filter)
-
-		default:
-			fmt.Printf("ERROR: Invalid endpoint.\n")
+		err := n.Get(url, ep, Args.folder, Args.data)
+		if err != nil {
+			fmt.Printf("ERROR: %s\n", err.Error())
 			os.Exit(1)
+		}
+		if Args.json == true {
+			n.ShowJson(Args.newline, false, "")
+		} else {
+			n.Show(false, "")
+		}
+
+	} else if strings.HasPrefix(ep, "show/") {
+
+		// GET REQUESTS
+
+		cmd := strings.Split(ep, "/")
+		n := createObject(cmd[1])
+
+		err := n.Get(url, ep, Args.folder, Args.data)
+		if err != nil {
+			fmt.Printf("ERROR: %s\n", err.Error())
+			os.Exit(1)
+		}
+		if Args.json == true {
+			n.ShowJson(Args.newline, Args.brief, Args.filter)
+		} else {
+			n.Show(Args.brief, Args.filter)
 		}
 
 	} else if strings.HasPrefix(ep, "add/") || strings.HasPrefix(ep, "modify/") ||
 		strings.HasPrefix(ep, "delete/") {
 
-		// GET REQUESTS
+		// POST REQUESTS
 
-		switch {
+		cmd := strings.Split(ep, "/")
+		n := createObject(cmd[1])
 
-		case strings.HasSuffix(ep, "/hosts"):
-			jh := nrc.NewNrcHosts()
-			err := jh.PostHosts(url, ep, Args.folder, Args.data)
-			if err != nil {
-				fmt.Printf("ERROR: %s\n", err.Error())
-				os.Exit(1)
-			}
-			fmt.Printf("SUCCESS\n")
-
-		case strings.HasSuffix(ep, "/services"):
-			jh := nrc.NewNrcServices()
-			err := jh.PostServices(url, ep, Args.folder, Args.data)
-			if err != nil {
-				fmt.Printf("ERROR: %s\n", err.Error())
-				os.Exit(1)
-			}
-			fmt.Printf("SUCCESS\n")
-
-		case strings.HasSuffix(ep, "/servicesets"):
-			jh := nrc.NewNrcServicesets()
-			err := jh.PostServicesets(url, ep, Args.folder, Args.data)
-			if err != nil {
-				fmt.Printf("ERROR: %s\n", err.Error())
-				os.Exit(1)
-			}
-			fmt.Printf("SUCCESS\n")
-
-		case strings.HasSuffix(ep, "/hosttemplates"):
-			jh := nrc.NewNrcHosttemplates()
-			err := jh.PostHosttemplates(url, ep, Args.folder, Args.data)
-			if err != nil {
-				fmt.Printf("ERROR: %s\n", err.Error())
-				os.Exit(1)
-			}
-			fmt.Printf("SUCCESS\n")
-
-		case strings.HasSuffix(ep, "/servicetemplates"):
-			jh := nrc.NewNrcServicetemplates()
-			err := jh.PostServicetemplates(url, ep, Args.folder, Args.data)
-			if err != nil {
-				fmt.Printf("ERROR: %s\n", err.Error())
-				os.Exit(1)
-			}
-			fmt.Printf("SUCCESS\n")
-
-		case strings.HasSuffix(ep, "/hostgroups"):
-			jh := nrc.NewNrcHostgroups()
-			err := jh.PostHostgroups(url, ep, Args.folder, Args.data)
-			if err != nil {
-				fmt.Printf("ERROR: %s\n", err.Error())
-				os.Exit(1)
-			}
-			fmt.Printf("SUCCESS\n")
-
-		case strings.HasSuffix(ep, "/servicegroups"):
-			jh := nrc.NewNrcServicegroups()
-			err := jh.PostServicegroups(url, ep, Args.folder, Args.data)
-			if err != nil {
-				fmt.Printf("ERROR: %s\n", err.Error())
-				os.Exit(1)
-			}
-			fmt.Printf("SUCCESS\n")
-
-		case strings.HasSuffix(ep, "/contacts"):
-			jh := nrc.NewNrcContacts()
-			err := jh.PostContacts(url, ep, Args.folder, Args.data)
-			if err != nil {
-				fmt.Printf("ERROR: %s\n", err.Error())
-				os.Exit(1)
-			}
-			fmt.Printf("SUCCESS\n")
-
-		case strings.HasSuffix(ep, "/contactgroups"):
-			jh := nrc.NewNrcContactgroups()
-			err := jh.PostContactgroups(url, ep, Args.folder, Args.data)
-			if err != nil {
-				fmt.Printf("ERROR: %s\n", err.Error())
-				os.Exit(1)
-			}
-			fmt.Printf("SUCCESS\n")
-
-		case strings.HasSuffix(ep, "/timeperiods"):
-			jh := nrc.NewNrcTimeperiods()
-			err := jh.PostTimeperiods(url, ep, Args.folder, Args.data)
-			if err != nil {
-				fmt.Printf("ERROR: %s\n", err.Error())
-				os.Exit(1)
-			}
-			fmt.Printf("SUCCESS\n")
-
-		case strings.HasSuffix(ep, "/commands"):
-			jh := nrc.NewNrcCommands()
-			err := jh.PostCommands(url, ep, Args.folder, Args.data)
-			if err != nil {
-				fmt.Printf("ERROR: %s\n", err.Error())
-				os.Exit(1)
-			}
-			fmt.Printf("SUCCESS\n")
-
-		case strings.HasSuffix(ep, "/servicedeps"):
-			jh := nrc.NewNrcServicedeps()
-			err := jh.PostServicedeps(url, ep, Args.folder, Args.data)
-			if err != nil {
-				fmt.Printf("ERROR: %s\n", err.Error())
-				os.Exit(1)
-			}
-			fmt.Printf("SUCCESS\n")
-
-		case strings.HasSuffix(ep, "/hostdeps"):
-			jh := nrc.NewNrcHostdeps()
-			err := jh.PostHostdeps(url, ep, Args.folder, Args.data)
-			if err != nil {
-				fmt.Printf("ERROR: %s\n", err.Error())
-				os.Exit(1)
-			}
-			fmt.Printf("SUCCESS\n")
-
-		case strings.HasSuffix(ep, "/serviceesc"):
-			jh := nrc.NewNrcServiceesc()
-			err := jh.PostServiceesc(url, ep, Args.folder, Args.data)
-			if err != nil {
-				fmt.Printf("ERROR: %s\n", err.Error())
-				os.Exit(1)
-			}
-			fmt.Printf("SUCCESS\n")
-
-		case strings.HasSuffix(ep, "/hostesc"):
-			jh := nrc.NewNrcHostesc()
-			err := jh.PostHostesc(url, ep, Args.folder, Args.data)
-			if err != nil {
-				fmt.Printf("ERROR: %s\n", err.Error())
-				os.Exit(1)
-			}
-			fmt.Printf("SUCCESS\n")
-
-		case strings.HasSuffix(ep, "/serviceextinfo"):
-			jh := nrc.NewNrcServiceextinfo()
-			err := jh.PostServiceextinfo(url, ep, Args.folder, Args.data)
-			if err != nil {
-				fmt.Printf("ERROR: %s\n", err.Error())
-				os.Exit(1)
-			}
-			fmt.Printf("SUCCESS\n")
-
-		case strings.HasSuffix(ep, "/hostextinfo"):
-			jh := nrc.NewNrcHostextinfo()
-			err := jh.PostHostextinfo(url, ep, Args.folder, Args.data)
-			if err != nil {
-				fmt.Printf("ERROR: %s\n", err.Error())
-				os.Exit(1)
-			}
-			fmt.Printf("SUCCESS\n")
-
-		default:
-			fmt.Printf("ERROR: Invalid endpoint.\n")
+		err := n.Post(url, ep, Args.folder, Args.data)
+		if err != nil {
+			fmt.Printf("ERROR: %s\n", err.Error())
 			os.Exit(1)
 		}
+		if Args.json == true {
+			n.ShowJson(Args.newline, Args.brief, Args.filter)
+		} else {
+			n.Show(Args.brief, Args.filter)
+		}
 	}
-
 }
