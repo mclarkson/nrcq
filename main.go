@@ -114,7 +114,13 @@ func DisplayArray(a, r []string) {
 
 func createObject(object string) (n nrc.NrcQuery) {
 	switch object {
+	case "restart":
+		n = nrc.NewNrcRestart()
+	case "nagios":
+		n = nrc.NewNrcRestart()
 	case "check":
+		n = nrc.NewNrcCheck()
+	case "nagiosconfig":
 		n = nrc.NewNrcCheck()
 	case "hosts":
 		n = nrc.NewNrcHosts()
@@ -175,9 +181,9 @@ func main() {
 		n := createObject(Args.list)
 
 		if Args.json == true {
-			fmt.Printf("%s\n", []byte(n.FieldsJson()))
+			fmt.Printf("%s\n", []byte(n.OptionsJson()))
 		} else {
-			DisplayArray(n.Fields(), n.RequiredFields())
+			DisplayArray(n.Options(), n.RequiredOptions())
 		}
 
 		os.Exit(0)
@@ -224,7 +230,7 @@ func main() {
 		}
 
 	} else if strings.HasPrefix(ep, "add/") || strings.HasPrefix(ep, "modify/") ||
-		strings.HasPrefix(ep, "delete/") {
+		strings.HasPrefix(ep, "delete/") || strings.HasPrefix(ep, "restart/") {
 
 		// POST REQUESTS
 
@@ -236,10 +242,6 @@ func main() {
 			fmt.Printf("ERROR: %s\n", err.Error())
 			os.Exit(1)
 		}
-		if Args.json == true {
-			n.ShowJson(Args.newline, Args.brief, Args.filter)
-		} else {
-			n.Show(Args.brief, Args.filter)
-		}
+		fmt.Printf("SUCCESS\n")
 	}
 }
