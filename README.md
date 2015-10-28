@@ -48,7 +48,7 @@ EXAMPLES
 
 ```
 
-Compiled binaries are available at [sourceforge](https://sourceforge.net/projects/nagrestconf/files/ncrq), or to compile yourself use:
+Compiled binaries are available at [sourceforge](https://sourceforge.net/projects/nagrestconf/files/nrcq), or to compile yourself use:
 
     go get github.com/mclarkson/nrcq
 
