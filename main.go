@@ -84,8 +84,9 @@ func init() {
 		"Remove spaces and lines from the Json output.")
 	flag.BoolVarP(&Args.brief, "complete", "c", false,
 		"Also show fields with empty values.")
-	flag.BoolVarP(&Args.encode, "encode", "e", false,
-		"URL Encode output where necessary so it can be piped to another tool.")
+	// Done automatically now:
+	//flag.BoolVarP(&Args.encode, "encode", "e", false,
+	//	"URL Encode output where necessary so it can be piped to another tool.")
 	flag.BoolVarP(&Args.listendpoints, "listendpoints", "L", false,
 		"List all endpoints/tables.")
 	flag.StringVarP(&Args.list, "list", "l", "",
@@ -208,12 +209,18 @@ func main() {
 
 	Args.data = []string(dataFlag)
 
-	// Args left after flag finishes
-	url := flag.Arg(0) // Base URL, eg. "http://1.2.3.4/rest"
-	ep := flag.Arg(1)  // end point, eg. "show/hosts"
+	if Args.json {
+		Args.encode = true
+	} else {
+		Args.encode = false
+	}
 
 	// Xfer the encode setting to the library
 	nrc.SetEncode(Args.encode)
+
+	// Args left after flag finishes
+	url := flag.Arg(0) // Base URL, eg. "http://1.2.3.4/rest"
+	ep := flag.Arg(1)  // end point, eg. "show/hosts"
 
 	if Args.list != "" {
 

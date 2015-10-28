@@ -13,7 +13,6 @@ DESCRIPTION
   -d, --data=[]: Set extra data to send, 'option:value'.
         The user should not urlencode data, nrcq will do it.
         May be used multiple times.
-  -e, --encode=false: URL Encode output where necessary so it can be piped to another tool.
   -f, --filter="": A client side RE2 regex filter, 'option:regex[,option:regex]...'
   -F, --folder="local": The system folder to query.
   -j, --json=false: Output in JSON format.
