@@ -9,28 +9,25 @@ import (
 )
 
 type args struct {
-	folder  string // The system folder to query
-	newline bool   // True - Output newlines
-	brief   bool   // True - Omit empty fields
-	filter  string // Regex filter
-	data    string // Data to send
-	encode  bool   // Encode output
-	list    string // Encode output
-	json    bool   // Encode output
+	folder        string   // The system folder to query
+	newline       bool     // True - Output newlines
+	brief         bool     // True - Omit empty fields
+	filter        string   // Regex filter
+	data          []string // Data to send
+	encode        bool     // Encode output
+	list          string   // Encode output
+	listendpoints bool     // Encode output
+	json          bool     // Encode output
 }
 
 var Args = args{}
 
-type data string
+type data []string
 
 var dataFlag data
 
 func (a *data) Set(value string) error {
-	comma := ","
-	if len(*a) == 0 {
-		comma = ""
-	}
-	*a += data(comma + value)
+	*a = append(*a, (value))
 	return nil
 }
 func (a *data) String() string {
@@ -39,28 +36,38 @@ func (a *data) String() string {
 
 func init() {
 	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "\nnrcq(8)             System Administration Utilities            nrcq(8)\n")
-		fmt.Fprintf(os.Stderr, "\nNAME\n")
+		fmt.Fprintf(os.Stderr, "\n")
+		fmt.Fprintf(os.Stderr, "nrcq(8)             System Administration Utilities            nrcq(8)\n")
+		fmt.Fprintf(os.Stderr, "\n")
+		fmt.Fprintf(os.Stderr, "NAME\n")
 		fmt.Fprintf(os.Stderr, "  nrcq - NagRestConf Query utility\n")
-		fmt.Fprintf(os.Stderr, "\nSYNOPSIS\n")
+		fmt.Fprintf(os.Stderr, "\n")
+		fmt.Fprintf(os.Stderr, "SYNOPSIS\n")
 		fmt.Fprintf(os.Stderr, "  nrcq [options] URL ENDPOINT\n")
-		fmt.Fprintf(os.Stderr, "\nDESCRIPTION\n")
+		fmt.Fprintf(os.Stderr, "\n")
+		fmt.Fprintf(os.Stderr, "DESCRIPTION\n")
 		flag.PrintDefaults()
-		fmt.Fprintf(os.Stderr, "\nEXAMPLES\n")
+		fmt.Fprintf(os.Stderr, "\n")
+		fmt.Fprintf(os.Stderr, "EXAMPLES\n")
 		fmt.Fprintf(os.Stderr, "  List all nagios options for the servicesets table:\n")
 		fmt.Fprintf(os.Stderr, "    nrcq -l servicesets\n")
-		fmt.Fprintf(os.Stderr, "\n  Show all hosts:\n")
+		fmt.Fprintf(os.Stderr, "\n")
+		fmt.Fprintf(os.Stderr, "  Show all hosts:\n")
 		fmt.Fprintf(os.Stderr, "    nrcq http://server/rest show/hosts\n")
-		fmt.Fprintf(os.Stderr, "\n  Show a subset of services using an RE2 regular expression:\n")
+		fmt.Fprintf(os.Stderr, "\n")
+		fmt.Fprintf(os.Stderr, "  Show a subset of services using an RE2 regular expression:\n")
 		fmt.Fprintf(os.Stderr, "    nrcq http://server/rest show/services")
 		fmt.Fprintf(os.Stderr, " -f \"name:\\bhost2\\b|web,svcdesc:(?i)swap\"\n")
-		fmt.Fprintf(os.Stderr, "\n  Add a new host:\n")
+		fmt.Fprintf(os.Stderr, "\n")
+		fmt.Fprintf(os.Stderr, "  Add a new host:\n")
 		fmt.Fprintf(os.Stderr, "    nrcq http://server/rest add/hosts \\\n")
-		fmt.Fprintf(os.Stderr, "      -d name:server1,alias:server1 \\\n")
+		fmt.Fprintf(os.Stderr, "      -d name:server1 \\\n")
+		fmt.Fprintf(os.Stderr, "      -d alias:server1 \\\n")
 		fmt.Fprintf(os.Stderr, "      -d ipaddress:server1.there.gq \\\n")
 		fmt.Fprintf(os.Stderr, "      -d template:hsttmpl-local \\\n")
 		fmt.Fprintf(os.Stderr, "      -d servicesets:example-lin\n")
-		fmt.Fprintf(os.Stderr, "\n  Delete a host and all of its services:\n")
+		fmt.Fprintf(os.Stderr, "\n")
+		fmt.Fprintf(os.Stderr, "  Delete a host and all of its services:\n")
 		fmt.Fprintf(os.Stderr, "    nrcq http://server/rest delete/services \\\n")
 		fmt.Fprintf(os.Stderr, "      -d name:server1 \\\n")
 		fmt.Fprintf(os.Stderr, "      -d \"svcdesc:.*\"\n")
@@ -76,17 +83,17 @@ func init() {
 	flag.BoolVarP(&Args.newline, "pack", "p", false,
 		"Remove spaces and lines from the Json output.")
 	flag.BoolVarP(&Args.brief, "complete", "c", false,
-		"Show fields with empty values in Json output.")
+		"Also show fields with empty values.")
 	flag.BoolVarP(&Args.encode, "encode", "e", false,
-		"Encode output so it can be piped to another tool.")
+		"URL Encode output where necessary so it can be piped to another tool.")
+	flag.BoolVarP(&Args.listendpoints, "listendpoints", "L", false,
+		"List all endpoints/tables.")
 	flag.StringVarP(&Args.list, "list", "l", "",
 		"List all options for the specified table. Required fields are\n\t preceded by a star, '*'.")
 	flag.BoolVarP(&Args.json, "json", "j", false,
 		"Output in JSON format.")
-	//flag.StringVarP(&Args.data, "data", "d", "",
-	//	"Set extra data to send, 'option:value[,option:value]...'")
 	flag.VarP(&dataFlag, "data", "d",
-		"Set extra data to send, 'option:value[,option:value]...'\n\tMay be used multiple times.")
+		"Set extra data to send, 'option:value'.\n\tThe user should not urlencode data, nrcq will do it.\n\tMay be used multiple times.")
 }
 
 func DisplayArray(a, r []string) {
@@ -112,15 +119,47 @@ func DisplayArray(a, r []string) {
 	fmt.Printf("\n\n")
 }
 
+func endpointarr() []string {
+	a := []string{
+		"check/nagiosconfig",
+		"apply/nagiosconfig",
+		"apply/nagioslastgoodconfig",
+		"restart/nagios",
+		"show|add|modify|delete/hosts",
+		"show|add|modify|delete/services",
+		"show|add|modify|delete/servicesets",
+		"show|add|modify|delete/hosttemplates",
+		"show|add|modify|delete/servicetemplates",
+		"show|add|modify|delete/hostgroups",
+		"show|add|modify|delete/servicegroups",
+		"show|add|modify|delete/contacts",
+		"show|add|modify|delete/contactgroups",
+		"show|add|modify|delete/timeperiods",
+		"show|add|modify|delete/commands",
+		"show|add|modify|delete/servicedeps",
+		"show|add|modify|delete/hostdeps",
+		"show|add|modify|delete/serviceesc",
+		"show|add|modify|delete/hostesc",
+		"show|add|modify|delete/serviceextinfo",
+		"show|add|modify|delete/hostextinfo",
+	}
+
+	return a
+}
+
 func createObject(object string) (n nrc.NrcQuery) {
 	switch object {
+	case "applynagiosconfig":
+		n = nrc.NewNrcApplyConfig()
+	case "nagioslastgoodconfig":
+		n = nrc.NewNrcLastGood()
 	case "restart":
 		n = nrc.NewNrcRestart()
 	case "nagios":
 		n = nrc.NewNrcRestart()
 	case "check":
 		n = nrc.NewNrcCheck()
-	case "nagiosconfig":
+	case "nagiosconfig": //show
 		n = nrc.NewNrcCheck()
 	case "hosts":
 		n = nrc.NewNrcHosts()
@@ -167,7 +206,7 @@ func main() {
 
 	flag.Parse()
 
-	Args.data = string(dataFlag)
+	Args.data = []string(dataFlag)
 
 	// Args left after flag finishes
 	url := flag.Arg(0) // Base URL, eg. "http://1.2.3.4/rest"
@@ -184,6 +223,19 @@ func main() {
 			fmt.Printf("%s\n", []byte(n.OptionsJson()))
 		} else {
 			DisplayArray(n.Options(), n.RequiredOptions())
+		}
+
+		os.Exit(0)
+	}
+
+	if Args.listendpoints {
+
+		n := endpointarr()
+
+		if Args.json == true {
+			fmt.Printf("%s\n", n)
+		} else {
+			DisplayArray(n, []string{})
 		}
 
 		os.Exit(0)
@@ -230,7 +282,8 @@ func main() {
 		}
 
 	} else if strings.HasPrefix(ep, "add/") || strings.HasPrefix(ep, "modify/") ||
-		strings.HasPrefix(ep, "delete/") || strings.HasPrefix(ep, "restart/") {
+		strings.HasPrefix(ep, "delete/") || strings.HasPrefix(ep, "restart/") ||
+		ep == "apply/nagioslastgoodconfig" {
 
 		// POST REQUESTS
 
@@ -243,5 +296,22 @@ func main() {
 			os.Exit(1)
 		}
 		fmt.Printf("SUCCESS\n")
+
+	} else if ep == "apply/nagiosconfig" {
+
+		// This is the only Post request that produces output
+
+		n := createObject("applynagiosconfig")
+
+		err := n.Post(url, ep, Args.folder, Args.data)
+		if err != nil {
+			fmt.Printf("ERROR: %s\n", err.Error())
+			os.Exit(1)
+		}
+		if Args.json == true {
+			n.ShowJson(Args.newline, Args.brief, Args.filter)
+		} else {
+			n.Show(Args.brief, Args.filter)
+		}
 	}
 }
