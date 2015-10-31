@@ -48,9 +48,9 @@ EXAMPLES
 
 ```
 
-Compiled binaries are available at [sourceforge](https://sourceforge.net/projects/nagrestconf/files/ncrq) for Linux, Mac and Windows.
+Compiled binaries are available for Linux, Mac and Windows at [sourceforge](https://sourceforge.net/projects/nagrestconf/files/ncrq).
 
-To compile from source install [Google Go](https://golang.org/dl/) and [Git](https://git-scm.com/downloads) then use:
+To compile from source, install [Google Go](https://golang.org/dl/) and [Git](https://git-scm.com/downloads) then use:
 
     go get github.com/mclarkson/nrcq
 
