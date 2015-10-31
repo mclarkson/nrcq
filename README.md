@@ -54,3 +54,5 @@ To compile from source, install [Google Go](https://golang.org/dl/) and [Git](ht
 
     go get github.com/mclarkson/nrcq
 
+There is a short [REST Tutorial](http://nagrestconf.smorg.co.uk/documentation/resttut.php).
+
