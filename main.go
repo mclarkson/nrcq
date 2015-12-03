@@ -1,3 +1,19 @@
+// nrcq - NagRestConf Query utility
+// Copyright (C) 2014  Mark Clarkson
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 package main
 
 import (
@@ -7,6 +23,8 @@ import (
 	"os"
 	"strings"
 )
+
+var Version = "0.1.1"
 
 type args struct {
 	folder        string   // The system folder to query
@@ -20,6 +38,7 @@ type args struct {
 	json          bool     // Encode output
 	username      string   // Encode output
 	password      string   // Encode output
+	version       bool     // Whether to display the version
 }
 
 var Args = args{}
@@ -51,13 +70,21 @@ func init() {
 		flag.PrintDefaults()
 		fmt.Fprintf(os.Stderr, "\n")
 		fmt.Fprintf(os.Stderr, "EXAMPLES\n")
+		fmt.Fprintf(os.Stderr, "  Show all valid endpoints:\n")
+		fmt.Fprintf(os.Stderr, "    nrcq -l servicesets\n")
+		fmt.Fprintf(os.Stderr, "\n")
 		fmt.Fprintf(os.Stderr, "  List all nagios options for the servicesets table:\n")
 		fmt.Fprintf(os.Stderr, "    nrcq -l servicesets\n")
 		fmt.Fprintf(os.Stderr, "\n")
 		fmt.Fprintf(os.Stderr, "  Show all hosts:\n")
 		fmt.Fprintf(os.Stderr, "    nrcq http://server/rest show/hosts\n")
 		fmt.Fprintf(os.Stderr, "\n")
-		fmt.Fprintf(os.Stderr, "  Show a subset of services using an RE2 regular expression:\n")
+		fmt.Fprintf(os.Stderr, "  Show a subset of hosts using a simple RE2 regular expression:\n")
+		fmt.Fprintf(os.Stderr, "    nrcq http://server/rest show/hosts")
+		fmt.Fprintf(os.Stderr, " -f \"name:host2\"\n")
+		fmt.Fprintf(os.Stderr, "\n")
+		fmt.Fprintf(os.Stderr, "  Show a subset of services using a complex RE2 regular expression:\n")
+		fmt.Fprintf(os.Stderr, "  (See https://github.com/google/re2/wiki/Syntax)\n")
 		fmt.Fprintf(os.Stderr, "    nrcq http://server/rest show/services")
 		fmt.Fprintf(os.Stderr, " -f \"name:\\bhost2\\b|web,svcdesc:(?i)swap\"\n")
 		fmt.Fprintf(os.Stderr, "\n")
@@ -82,6 +109,8 @@ func init() {
 		"The system folder to query.")
 	flag.StringVarP(&Args.filter, "filter", "f", "",
 		"A client side RE2 regex filter, 'option:regex[,option:regex]...'")
+	flag.BoolVarP(&Args.version, "version", "v", false,
+		"Show the version of this program.")
 	flag.BoolVarP(&Args.newline, "pack", "p", false,
 		"Remove spaces and lines from the Json output.")
 	flag.BoolVarP(&Args.brief, "complete", "c", false,
@@ -214,6 +243,11 @@ func main() {
 	flag.Parse()
 
 	Args.data = []string(dataFlag)
+
+	if Args.version {
+		fmt.Printf("Nrcq version is %s\n", Version)
+		os.Exit(0)
+	}
 
 	if Args.json {
 		Args.encode = true
