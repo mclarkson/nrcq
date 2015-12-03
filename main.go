@@ -18,6 +18,8 @@ type args struct {
 	list          string   // Encode output
 	listendpoints bool     // Encode output
 	json          bool     // Encode output
+	username      string   // Encode output
+	password      string   // Encode output
 }
 
 var Args = args{}
@@ -89,6 +91,10 @@ func init() {
 	//	"URL Encode output where necessary so it can be piped to another tool.")
 	flag.BoolVarP(&Args.listendpoints, "listendpoints", "L", false,
 		"List all endpoints/tables.")
+	flag.StringVarP(&Args.username, "username", "U", "",
+		"Username for Basic Auth.")
+	flag.StringVarP(&Args.password, "password", "P", "",
+		"Password for Basic Auth.")
 	flag.StringVarP(&Args.list, "list", "l", "",
 		"List all options for the specified table. Required fields are\n\t preceded by a star, '*'.")
 	flag.BoolVarP(&Args.json, "json", "j", false,
@@ -151,51 +157,51 @@ func endpointarr() []string {
 func createObject(object string) (n nrc.NrcQuery) {
 	switch object {
 	case "applynagiosconfig":
-		n = nrc.NewNrcApplyConfig()
+		n = nrc.NewNrcApplyConfig(Args.username, Args.password)
 	case "nagioslastgoodconfig":
-		n = nrc.NewNrcLastGood()
+		n = nrc.NewNrcLastGood(Args.username, Args.password)
 	case "restart":
-		n = nrc.NewNrcRestart()
+		n = nrc.NewNrcRestart(Args.username, Args.password)
 	case "nagios":
-		n = nrc.NewNrcRestart()
+		n = nrc.NewNrcRestart(Args.username, Args.password)
 	case "check":
-		n = nrc.NewNrcCheck()
+		n = nrc.NewNrcCheck(Args.username, Args.password)
 	case "nagiosconfig": //show
-		n = nrc.NewNrcCheck()
+		n = nrc.NewNrcCheck(Args.username, Args.password)
 	case "hosts":
-		n = nrc.NewNrcHosts()
+		n = nrc.NewNrcHosts(Args.username, Args.password)
 	case "services":
-		n = nrc.NewNrcServices()
+		n = nrc.NewNrcServices(Args.username, Args.password)
 	case "servicesets":
-		n = nrc.NewNrcServicesets()
+		n = nrc.NewNrcServicesets(Args.username, Args.password)
 	case "hosttemplates":
-		n = nrc.NewNrcHosttemplates()
+		n = nrc.NewNrcHosttemplates(Args.username, Args.password)
 	case "servicetemplates":
-		n = nrc.NewNrcServicetemplates()
+		n = nrc.NewNrcServicetemplates(Args.username, Args.password)
 	case "hostgroups":
-		n = nrc.NewNrcHostgroups()
+		n = nrc.NewNrcHostgroups(Args.username, Args.password)
 	case "servicegroups":
-		n = nrc.NewNrcServicegroups()
+		n = nrc.NewNrcServicegroups(Args.username, Args.password)
 	case "contacts":
-		n = nrc.NewNrcContacts()
+		n = nrc.NewNrcContacts(Args.username, Args.password)
 	case "contactgroups":
-		n = nrc.NewNrcContactgroups()
+		n = nrc.NewNrcContactgroups(Args.username, Args.password)
 	case "timeperiods":
-		n = nrc.NewNrcTimeperiods()
+		n = nrc.NewNrcTimeperiods(Args.username, Args.password)
 	case "commands":
-		n = nrc.NewNrcCommands()
+		n = nrc.NewNrcCommands(Args.username, Args.password)
 	case "servicedeps":
-		n = nrc.NewNrcServicedeps()
+		n = nrc.NewNrcServicedeps(Args.username, Args.password)
 	case "hostdeps":
-		n = nrc.NewNrcHostdeps()
+		n = nrc.NewNrcHostdeps(Args.username, Args.password)
 	case "serviceesc":
-		n = nrc.NewNrcServiceesc()
+		n = nrc.NewNrcServiceesc(Args.username, Args.password)
 	case "hostesc":
-		n = nrc.NewNrcHostesc()
+		n = nrc.NewNrcHostesc(Args.username, Args.password)
 	case "serviceextinfo":
-		n = nrc.NewNrcServiceextinfo()
+		n = nrc.NewNrcServiceextinfo(Args.username, Args.password)
 	case "hostextinfo":
-		n = nrc.NewNrcHostextinfo()
+		n = nrc.NewNrcHostextinfo(Args.username, Args.password)
 	default:
 		fmt.Printf("ERROR: Unknown endpoint\n")
 		os.Exit(1)
