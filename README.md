@@ -20,6 +20,8 @@ DESCRIPTION
          preceded by a star, '*'.
   -L, --listendpoints=false: List all endpoints/tables.
   -p, --pack=false: Remove spaces and lines from the Json output.
+  -P, --password="": Password for Basic Auth.
+  -U, --username="": Username for Basic Auth.
 
 EXAMPLES
   List all nagios options for the servicesets table:
