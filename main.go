@@ -71,7 +71,7 @@ func init() {
 		fmt.Fprintf(os.Stderr, "\n")
 		fmt.Fprintf(os.Stderr, "EXAMPLES\n")
 		fmt.Fprintf(os.Stderr, "  Show all valid endpoints:\n")
-		fmt.Fprintf(os.Stderr, "    nrcq -l servicesets\n")
+		fmt.Fprintf(os.Stderr, "    nrcq -L\n")
 		fmt.Fprintf(os.Stderr, "\n")
 		fmt.Fprintf(os.Stderr, "  List all nagios options for the servicesets table:\n")
 		fmt.Fprintf(os.Stderr, "    nrcq -l servicesets\n")

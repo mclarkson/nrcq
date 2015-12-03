@@ -26,7 +26,7 @@ DESCRIPTION
 
 EXAMPLES
   Show all valid endpoints:
-    nrcq -l servicesets
+    nrcq -L
 
   List all nagios options for the servicesets table:
     nrcq -l servicesets
