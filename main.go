@@ -24,7 +24,7 @@ import (
 	"strings"
 )
 
-var Version = "0.1.2"
+var Version = "0.1.3"
 
 type args struct {
 	folder        string   // The system folder to query
